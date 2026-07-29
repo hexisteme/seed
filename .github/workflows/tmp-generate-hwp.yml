@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - tmp-hwp-approval-20260729
+  pull_request:
+    branches:
+      - master
 
 permissions:
   contents: write
@@ -13,6 +16,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: tmp-hwp-approval-20260729
       - uses: actions/setup-python@v5
         with:
           python-version: '3.13'
@@ -26,4 +31,4 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add generated/사업수행계획서_변경승인서.hwp
           git commit -m "build: generate HWP approval form" || exit 0
-          git push
+          git push origin HEAD:tmp-hwp-approval-20260729
