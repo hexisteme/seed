@@ -1,0 +1,29 @@
+name: Temporary HWP generation
+
+on:
+  push:
+    branches:
+      - tmp-hwp-approval-20260729
+
+permissions:
+  contents: write
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: Install HWP writer
+        run: python -m pip install --upgrade pip hwpers==0.4.0
+      - name: Generate HWP
+        run: python tools/generate_hwp_approval.py
+      - name: Commit generated document
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add generated/사업수행계획서_변경승인서.hwp
+          git commit -m "build: generate HWP approval form" || exit 0
+          git push
